@@ -17,6 +17,8 @@ services:
       EBK_SERVER_ROOT_URL: "http://localhost:8081/"
       # 家族のみで利用するため、初期セットアップ後は .env で無効化可能
       EBK_USER_ENABLE_REGISTER: "${EBK_USER_ENABLE_REGISTER:-true}"
+      # AI/LLM 連携用 MCP サーバー (http://localhost:8081/mcp, Bearer トークン認証)
+      EBK_MCP_ENABLE_MCP: "true"
     volumes:
       - ./docker-data/data:/ezbookkeeping/data
       - ./docker-data/storage:/ezbookkeeping/storage
