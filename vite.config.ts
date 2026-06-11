@@ -16,6 +16,9 @@ const SRC_DIR = resolve(__dirname, './src');
 const PUBLIC_DIR = resolve(__dirname, './public');
 const BUILD_DIR = resolve(__dirname, './dist',);
 
+const DEV_SERVER_PORT = parseInt(process.env['EZBOOKKEEPING_DEV_SERVER_PORT'] || '8081');
+const DEV_API_PROXY_TARGET = process.env['EZBOOKKEEPING_DEV_API_PROXY_TARGET'] || 'http://127.0.0.1:8080/';
+
 function injectFramework7CssFile({ htmlFileName, placeHolders }: { htmlFileName: string, placeHolders: { name: string, srcFileName: string, distFileNamePrefix: string }[] }): Plugin[] {
     return [
         {
@@ -255,51 +258,51 @@ export default defineConfig(() => {
         },
         server: {
             host: '0.0.0.0',
-            port: 8081,
+            port: DEV_SERVER_PORT,
             strictPort: true,
             proxy: {
                 '/server_settings.js': {
-                    target: 'http://127.0.0.1:8080/',
+                    target: DEV_API_PROXY_TARGET,
                     changeOrigin: true
                 },
                 '/mobile/server_settings.js': {
-                    target: 'http://127.0.0.1:8080/',
+                    target: DEV_API_PROXY_TARGET,
                     changeOrigin: true
                 },
                 '/desktop/server_settings.js': {
-                    target: 'http://127.0.0.1:8080/',
+                    target: DEV_API_PROXY_TARGET,
                     changeOrigin: true
                 },
                 '/oauth2': {
-                    target: 'http://127.0.0.1:8080/',
+                    target: DEV_API_PROXY_TARGET,
                     changeOrigin: true
                 },
                 '/api': {
-                    target: 'http://127.0.0.1:8080/',
+                    target: DEV_API_PROXY_TARGET,
                     changeOrigin: true
                 },
                 '/mcp': {
-                    target: 'http://127.0.0.1:8080/',
+                    target: DEV_API_PROXY_TARGET,
                     changeOrigin: true
                 },
                 '/avatar': {
-                    target: 'http://127.0.0.1:8080/',
+                    target: DEV_API_PROXY_TARGET,
                     changeOrigin: true
                 },
                 '/pictures': {
-                    target: 'http://127.0.0.1:8080/',
+                    target: DEV_API_PROXY_TARGET,
                     changeOrigin: true
                 },
                 '/qrcode': {
-                    target: 'http://127.0.0.1:8080/',
+                    target: DEV_API_PROXY_TARGET,
                     changeOrigin: true
                 },
                 '/proxy': {
-                    target: 'http://127.0.0.1:8080/',
+                    target: DEV_API_PROXY_TARGET,
                     changeOrigin: true
                 },
                 '/_AMapService': {
-                    target: 'http://127.0.0.1:8080/',
+                    target: DEV_API_PROXY_TARGET,
                     changeOrigin: true
                 }
             }
