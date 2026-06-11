@@ -34,10 +34,10 @@ description: ezBookkeeping への独自機能追加の定型フロー(ブラン�
 ## 4. 品質チェックとコミット(マージ前に全部必須)
 
 ```bash
-npm run lint && npm test && go test ./...
+npm run lint && npm test && go test ./... && node .claude/scripts/check-i18n-parity.mjs
 ```
 
-バックエンドを触っていなくても `go test ./...` は実行する(モデルの DTO 変更などが波及していることがある)。
+バックエンドを触っていなくても `go test ./...` は実行する(モデルの DTO 変更などが波及していることがある)。最後のパリティ検査は en.json / ja.json のキー集合一致の確認(片側だけの i18n 追加を検出)。
 
 チェックが通ったら feature ブランチに**本家流メッセージ(英語・小文字始まり・簡潔な現在形)でコミットする**。dev 検証の前にコミットしておくと、検証で出た修正が差分として見える。
 

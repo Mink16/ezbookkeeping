@@ -44,7 +44,13 @@ description: 本家 (mayswind/ezbookkeeping) の新リリースを custom/main �
 6. **検証**
 
    ```bash
-   npm run lint && npm test && go test ./...
+   npm run lint && npm test && go test ./... && node .claude/scripts/check-i18n-parity.mjs
+   ```
+
+   あわせてマージ解消ミスで独自ファイルを失っていないかを確認する:
+
+   ```bash
+   ls .claude/rules .claude/skills .claude/hooks docker-compose.yml .github/workflows/custom-branch-ci.yml
    ```
 
 7. **再デプロイ**
