@@ -5,16 +5,53 @@
       "Bash(npm run lint)",
       "Bash(npm test)",
       "Bash(npx vitest run *)",
+      "Bash(node .claude/scripts/*)",
       "Bash(docker compose ps *)",
       "Bash(docker compose logs *)",
+      "Bash(docker compose build ezbookkeeping-dev*)",
+      "Bash(docker compose up -d ezbookkeeping-dev*)",
+      "Bash(docker compose restart ezbookkeeping-dev*)",
+      "Bash(docker compose stop ezbookkeeping-dev*)",
+      "Bash(docker compose start ezbookkeeping-dev*)",
       "Bash(go test *)",
+      "Bash(go vet *)",
+      "Bash(go build *)",
+      "Bash(gofmt *)",
       "Bash(gopls check *)",
+      "Bash(curl http://localhost:8082*)",
+      "Bash(curl http://localhost:8083*)",
+      "Bash(curl http://localhost:8180*)",
       "mcp__playwright__browser_snapshot",
       "mcp__playwright__browser_navigate",
+      "mcp__playwright__browser_navigate_back",
       "mcp__playwright__browser_take_screenshot",
       "mcp__playwright__browser_close",
       "mcp__playwright__browser_console_messages",
+      "mcp__playwright__browser_click",
+      "mcp__playwright__browser_type",
+      "mcp__playwright__browser_fill_form",
+      "mcp__playwright__browser_press_key",
+      "mcp__playwright__browser_wait_for",
+      "mcp__playwright__browser_select_option",
+      "mcp__playwright__browser_hover",
+      "mcp__playwright__browser_resize",
+      "mcp__ezbookkeeping-dev",
+      "mcp__ezbookkeeping__query_transactions",
+      "mcp__ezbookkeeping__query_all_accounts",
+      "mcp__ezbookkeeping__query_all_accounts_balance",
+      "mcp__ezbookkeeping__query_all_transaction_categories",
+      "mcp__ezbookkeeping__query_all_transaction_tags",
+      "mcp__ezbookkeeping__query_latest_exchange_rates",
       "mcp__plugin_context7_context7__query-docs"
+    ],
+    "ask": [
+      "mcp__ezbookkeeping__add_transaction"
+    ],
+    "deny": [
+      "Read(./.env)",
+      "Read(.env)",
+      "Bash(git push upstream*)",
+      "mcp__playwright__browser_run_code_unsafe"
     ]
   },
   "hooks": {
@@ -24,8 +61,18 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/block-main-commit.sh",
-            "statusMessage": "main 直コミット禁止チェック中..."
+            "command": "bash \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/block-git-violations.sh",
+            "statusMessage": "git 規約チェック中..."
+          }
+        ]
+      },
+      {
+        "matcher": "Bash|mcp__playwright__browser_navigate|mcp__playwright__browser_network_request|mcp__playwright__browser_evaluate",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/guard-prod.sh",
+            "statusMessage": "本番保護チェック中..."
           }
         ]
       }
