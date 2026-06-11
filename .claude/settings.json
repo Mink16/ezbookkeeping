@@ -29,6 +29,24 @@
           }
         ]
       }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/format-go.sh",
+            "statusMessage": "gofmt 実行中..."
+          },
+          {
+            "type": "command",
+            "command": "bash \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/format-frontend.sh",
+            "async": true,
+            "timeout": 60
+          }
+        ]
+      }
     ]
   }
 }
