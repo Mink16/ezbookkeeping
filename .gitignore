@@ -165,3 +165,6 @@ ezbookkeeping
 # Self-host local data
 /docker-data/
 /docker-data-dev/
+
+# Playwright MCP session data
+/.playwright-mcp/
