@@ -1,0 +1,23 @@
+services:
+  ezbookkeeping:
+    build:
+      context: .
+      args:
+        # 初回ビルドを高速化するためユニットテストをスキップ
+        SKIP_TESTS: ".*"
+    container_name: ezbookkeeping
+    restart: unless-stopped
+    ports:
+      # ホスト側 8080 は別コンテナ (photo-clock) が使用中のため 8081 を使用
+      - "8081:8080"
+    environment:
+      # 設定は EBK_<セクション>_<キー> 形式の環境変数で conf/ezbookkeeping.ini を上書きできる
+      EBK_SECURITY_SECRET_KEY: "${EBK_SECURITY_SECRET_KEY:?'.env に EBK_SECURITY_SECRET_KEY を設定してください'}"
+      EBK_SERVER_DOMAIN: "localhost"
+      EBK_SERVER_ROOT_URL: "http://localhost:8081/"
+      # 家族のみで利用するため、初期セットアップ後は .env で無効化可能
+      EBK_USER_ENABLE_REGISTER: "${EBK_USER_ENABLE_REGISTER:-true}"
+    volumes:
+      - ./docker-data/data:/ezbookkeeping/data
+      - ./docker-data/storage:/ezbookkeeping/storage
+      - ./docker-data/log:/ezbookkeeping/log

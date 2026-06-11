@@ -161,3 +161,6 @@ ezbookkeeping
 /data/
 /storage/
 /log/
+
+# Self-host local data
+/docker-data/
