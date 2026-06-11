@@ -5,6 +5,7 @@
 ## ブランチ運用
 
 - `main` は本家 (upstream) の完全ミラー。**独自コミットは絶対に入れない**。更新は `git pull upstream main` のみ
+  - この禁止は PreToolUse hook (`.claude/hooks/block-main-commit.sh`) でも強制されており、main 上での `git commit` / `merge` / `cherry-pick` / `revert` / `rebase` は自動的に deny される
 - 運用ブランチは `custom/main`(本家リリースタグ + 独自機能の統合ブランチ)
 - 機能追加は `custom/main` 起点で `feature/xxx` ブランチを切り、完成後 `custom/main` にマージする
 - 本家の新リリース取り込みは `/sync-upstream` スキルの手順に従う(リリースタグ単位でマージ。日次の main 追従はしない)
