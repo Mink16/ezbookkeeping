@@ -34,6 +34,14 @@ npm test        # Vitest
 go test ./...
 ```
 
+## 検証環境の使い分け
+
+- **機能検証・テストデータ投入・Playwright E2E は必ず dev インスタンス (http://localhost:8082) で行う**
+  - dev ユーザー: `dev` / `ezbk-dev-2026`(ローカル専用の捨てデータなので平文記載でよい)
+  - MCP は `ezbookkeeping-dev`(dev 向け)を使う
+- 本番インスタンス (http://localhost:8081) は家族の実データ。**機能検証に使わない**。`ezbookkeeping` MCP は実データの照会・記帳専用
+- dev のデータ初期化は `docker compose stop ezbookkeeping-dev` → `docker-data-dev/data` の中身を削除 → 起動 → dev ユーザー再作成
+
 ## デプロイ反映
 
 独自機能は自前イメージの再ビルドで反映する(本家イメージ `mayswind/ezbookkeeping` への差し替えでは独自機能が消える):

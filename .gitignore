@@ -164,3 +164,4 @@ ezbookkeeping
 
 # Self-host local data
 /docker-data/
+/docker-data-dev/

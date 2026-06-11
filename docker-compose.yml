@@ -23,3 +23,25 @@ services:
       - ./docker-data/data:/ezbookkeeping/data
       - ./docker-data/storage:/ezbookkeeping/storage
       - ./docker-data/log:/ezbookkeeping/log
+
+  # 開発・検証用インスタンス (本番の家計簿データに影響を与えずに機能検証する)
+  ezbookkeeping-dev:
+    build:
+      context: .
+      args:
+        SKIP_TESTS: ".*"
+    container_name: ezbookkeeping-dev
+    restart: unless-stopped
+    ports:
+      - "8082:8080"
+    environment:
+      # dev 専用キー (本番とトークンを共有しないこと自体が目的なので固定値でよい)
+      EBK_SECURITY_SECRET_KEY: "ezbookkeeping-dev-only-secret-key"
+      EBK_SERVER_DOMAIN: "localhost"
+      EBK_SERVER_ROOT_URL: "http://localhost:8082/"
+      EBK_USER_ENABLE_REGISTER: "true"
+      EBK_MCP_ENABLE_MCP: "true"
+    volumes:
+      - ./docker-data-dev/data:/ezbookkeeping/data
+      - ./docker-data-dev/storage:/ezbookkeeping/storage
+      - ./docker-data-dev/log:/ezbookkeeping/log
