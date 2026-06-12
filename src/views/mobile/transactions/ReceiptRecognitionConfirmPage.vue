@@ -128,9 +128,14 @@
                           v-for="row in rows"
                           @click="onRowClick(row)">
                 <template #media>
-                    <f7-checkbox :checked="row.include" :disabled="registering || row.saveStatus === 'saved'"
-                                 @click.stop
-                                 @change="onRowIncludeChanged(row, $event)"></f7-checkbox>
+                    <!-- a plain icon toggle is used instead of f7-checkbox because a native
+                         checkbox inside a link list item gets its click swallowed by the
+                         framework7 link handling and the include state silently desyncs -->
+                    <f7-link class="receipt-recognition-confirm-row-include" :class="{ 'disabled': registering || row.saveStatus === 'saved' }"
+                             @click.stop="onRowIncludeChanged(row)">
+                        <f7-icon :f7="row.include ? 'checkmark_circle_fill' : 'circle'"
+                                 :class="row.include ? 'text-color-primary' : 'text-color-gray'"></f7-icon>
+                    </f7-link>
                 </template>
                 <template #title>
                     <div class="display-flex align-items-center">
@@ -365,8 +370,8 @@ function onRowClick(row: ReceiptRecognitionConfirmRow): void {
     showRowActionSheet.value = true;
 }
 
-function onRowIncludeChanged(row: ReceiptRecognitionConfirmRow, event: Event): void {
-    setRowInclude(row.id, (event.target as HTMLInputElement).checked);
+function onRowIncludeChanged(row: ReceiptRecognitionConfirmRow): void {
+    setRowInclude(row.id, !row.include);
 }
 
 function editSelectedRowComment(): void {
