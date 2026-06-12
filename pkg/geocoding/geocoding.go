@@ -54,11 +54,13 @@ func NewProviderChain(providers []Provider) *ProviderChain {
 
 // Search tries each provider in the configured order with the provider-specific query built by buildQuery
 // (an empty query skips that provider) and returns the first hit, provider errors are logged and the next
-// provider is tried, nil is returned when no provider hits. The second return value reports whether at
-// least one provider completed successfully without a hit, so that the caller can distinguish a confirmed
-// no-hit result from transient provider failures (network errors, timeouts, rate limiting etc.)
+// provider is tried, nil is returned when no provider hits. The second return value reports whether the
+// no-hit result is definitive: it is true only when at least one provider was tried and every tried
+// provider completed without error, so that a transient failure of any provider (network error, timeout,
+// rate limiting etc.) never gets treated as a confirmed no-hit by the caller's negative cache
 func (p *ProviderChain) Search(c core.Context, buildQuery func(providerName string) string) (*GeocodingResult, bool) {
-	noHitConfirmed := false
+	tried := false
+	failed := false
 
 	for i := 0; i < len(p.providers); i++ {
 		provider := p.providers[i]
@@ -72,15 +74,16 @@ func (p *ProviderChain) Search(c core.Context, buildQuery func(providerName stri
 
 		if err != nil {
 			log.Warnf(c, "[geocoding.Search] provider \"%s\" failed to search \"%s\", because %s", provider.Name(), query, err.Error())
+			failed = true
 			continue
 		}
 
 		if result != nil {
-			return result, noHitConfirmed
+			return result, false
 		}
 
-		noHitConfirmed = true
+		tried = true
 	}
 
-	return nil, noHitConfirmed
+	return nil, tried && !failed
 }

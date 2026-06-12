@@ -117,7 +117,7 @@ func TestProviderChainSearch_AllProvidersErrorDoesNotConfirmNoHit(t *testing.T) 
 	assert.False(t, noHitConfirmed)
 }
 
-func TestProviderChainSearch_OneErrorAndOneCleanNoHitConfirmsNoHit(t *testing.T) {
+func TestProviderChainSearch_OneErrorAndOneCleanNoHitDoesNotConfirmNoHit(t *testing.T) {
 	firstProvider := &fakeGeocodingProvider{name: "first", err: errors.New("first provider error")}
 	secondProvider := &fakeGeocodingProvider{name: "second"}
 	chain := NewProviderChain([]Provider{firstProvider, secondProvider})
@@ -127,7 +127,7 @@ func TestProviderChainSearch_OneErrorAndOneCleanNoHitConfirmsNoHit(t *testing.T)
 	})
 
 	assert.Nil(t, actualResult)
-	assert.True(t, noHitConfirmed)
+	assert.False(t, noHitConfirmed)
 }
 
 func TestProviderChainSearch_AllQueriesEmptyDoesNotConfirmNoHit(t *testing.T) {
