@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'vitest';
 
-import { ALL_LLM_PROMPT_PLACEHOLDERS, getMissingLlmPromptPlaceholders } from '@/lib/llm_prompt.ts';
+import { ALL_LLM_PROMPT_PLACEHOLDERS, getAllLlmPromptPlaceholderHints, getMissingLlmPromptPlaceholders } from '@/lib/llm_prompt.ts';
 
 const CONTENT_WITH_ALL_PLACEHOLDERS = 'Time: {{.CurrentDateTime}}\n' +
     'Expense: {{.AllExpenseCategoryNames}}\n' +
@@ -51,5 +51,23 @@ describe('getMissingLlmPromptPlaceholders', () => {
     test('does not report duplicated placeholders as missing', () => {
         const content = '{{.CurrentDateTime}} and again {{.CurrentDateTime}}';
         expect(getMissingLlmPromptPlaceholders(content)).not.toContain('{{.CurrentDateTime}}');
+    });
+});
+
+describe('getAllLlmPromptPlaceholderHints', () => {
+    test('returns one hint with a description key for every placeholder', () => {
+        const hints = getAllLlmPromptPlaceholderHints();
+
+        expect(hints.length).toBe(ALL_LLM_PROMPT_PLACEHOLDERS.length);
+
+        for (const [index, placeholderName] of ALL_LLM_PROMPT_PLACEHOLDERS.entries()) {
+            expect(hints[index]?.placeholder).toBe('{{.' + placeholderName + '}}');
+            expect(hints[index]?.descriptionKey).toBeTruthy();
+        }
+    });
+
+    test('hint placeholders satisfy the missing placeholder check', () => {
+        const content = getAllLlmPromptPlaceholderHints().map(hint => hint.placeholder).join('\n');
+        expect(getMissingLlmPromptPlaceholders(content)).toStrictEqual([]);
     });
 });

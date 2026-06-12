@@ -4,7 +4,7 @@ import { useLlmPromptsStore } from '@/stores/llmPrompt.ts';
 
 import { LlmPrompt } from '@/models/llm_prompt.ts';
 
-import { getMissingLlmPromptPlaceholders } from '@/lib/llm_prompt.ts';
+import { type LlmPromptPlaceholderHint, getAllLlmPromptPlaceholderHints, getMissingLlmPromptPlaceholders } from '@/lib/llm_prompt.ts';
 
 export function useLlmPromptEditPageBase() {
     const llmPromptsStore = useLlmPromptsStore();
@@ -20,6 +20,8 @@ export function useLlmPromptEditPageBase() {
 
     const isNewPrompt = computed<boolean>(() => !prompt.value.id);
     const title = computed<string>(() => isNewPrompt.value ? 'Add Prompt' : 'Edit Prompt');
+
+    const allPlaceholderHints: LlmPromptPlaceholderHint[] = getAllLlmPromptPlaceholderHints();
 
     const missingPlaceholders = computed<string[]>(() => {
         if (!prompt.value.content) {
@@ -81,6 +83,8 @@ export function useLlmPromptEditPageBase() {
         previewing,
         showPreview,
         previewedContent,
+        // constants
+        allPlaceholderHints,
         // computed states
         isNewPrompt,
         title,

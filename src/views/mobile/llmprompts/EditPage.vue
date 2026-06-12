@@ -33,6 +33,13 @@
             ></f7-list-input>
         </f7-list>
 
+        <f7-block class="no-margin-top margin-bottom llm-prompt-placeholder-hints" v-if="!loading">
+            <p class="llm-prompt-placeholder-hints-title">{{ tt('Available Placeholders') }}</p>
+            <p :key="hint.placeholder" v-for="hint in allPlaceholderHints">
+                <code>{{ hint.placeholder }}</code><span> — {{ tt(hint.descriptionKey) }}</span>
+            </p>
+        </f7-block>
+
         <f7-block class="no-margin-top margin-bottom llm-prompt-placeholder-warning" v-if="!loading && missingPlaceholders.length > 0">
             {{ tt('format.misc.llmPromptMissingPlaceholders', { placeholders: missingPlaceholders.join(', ') }) }}
         </f7-block>
@@ -82,6 +89,7 @@ const {
     previewing,
     showPreview,
     previewedContent,
+    allPlaceholderHints,
     title,
     missingPlaceholders,
     inputIsNotChangedOrInvalid,
@@ -179,5 +187,18 @@ init();
 .llm-prompt-placeholder-warning {
     color: var(--f7-color-orange);
     font-size: var(--ebk-large-footer-font-size);
+}
+
+.llm-prompt-placeholder-hints {
+    color: var(--f7-block-footer-text-color);
+    font-size: var(--ebk-large-footer-font-size);
+}
+
+.llm-prompt-placeholder-hints p {
+    margin: 0 0 2px 0;
+}
+
+.llm-prompt-placeholder-hints .llm-prompt-placeholder-hints-title {
+    font-weight: bold;
 }
 </style>

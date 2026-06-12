@@ -30,6 +30,14 @@
                                 v-model="prompt.content"
                             />
                         </v-col>
+                        <v-col cols="12">
+                            <div class="text-caption">
+                                <div class="font-weight-bold mb-1">{{ tt('Available Placeholders') }}</div>
+                                <div :key="hint.placeholder" v-for="hint in allPlaceholderHints">
+                                    <code>{{ hint.placeholder }}</code><span> — {{ tt(hint.descriptionKey) }}</span>
+                                </div>
+                            </div>
+                        </v-col>
                         <v-col cols="12" v-if="missingPlaceholders.length > 0">
                             <v-alert type="warning" variant="tonal" density="compact">
                                 {{ tt('format.misc.llmPromptMissingPlaceholders', { placeholders: missingPlaceholders.join(', ') }) }}
@@ -97,6 +105,7 @@ const {
     previewing,
     showPreview,
     previewedContent,
+    allPlaceholderHints,
     title,
     missingPlaceholders,
     inputIsNotChanged,
