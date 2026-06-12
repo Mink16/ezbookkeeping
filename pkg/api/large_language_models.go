@@ -212,6 +212,9 @@ func (a *LargeLanguageModelsApi) RecognizeReceiptImageHandler(c *core.WebContext
 		return nil, errs.Or(err, errs.ErrOperationFailed)
 	}
 
+	// Custom (fork-local): use the active user-defined prompt instead of the default prompt if it exists
+	applyCustomReceiptSystemPrompt(c, uid, systemPromptParams, &bodyBuffer)
+
 	llmRequest := &data.LargeLanguageModelRequest{
 		Stream:                false,
 		SystemPrompt:          strings.ReplaceAll(bodyBuffer.String(), "\r\n", "\n"),

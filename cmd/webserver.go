@@ -469,6 +469,15 @@ func startWebServer(c *core.CliContext) error {
 				}
 			}
 
+			// Custom (fork-local): LLM receipt recognition system prompts
+			apiV1Route.GET("/custom/llm_prompts/list.json", bindApi(api.LlmPrompts.LlmPromptListHandler))
+			apiV1Route.GET("/custom/llm_prompts/get.json", bindApi(api.LlmPrompts.LlmPromptGetHandler))
+			apiV1Route.POST("/custom/llm_prompts/add.json", bindApi(api.LlmPrompts.LlmPromptCreateHandler))
+			apiV1Route.POST("/custom/llm_prompts/modify.json", bindApi(api.LlmPrompts.LlmPromptModifyHandler))
+			apiV1Route.POST("/custom/llm_prompts/delete.json", bindApi(api.LlmPrompts.LlmPromptDeleteHandler))
+			apiV1Route.POST("/custom/llm_prompts/set_active.json", bindApi(api.LlmPrompts.LlmPromptSetActiveHandler))
+			apiV1Route.POST("/custom/llm_prompts/preview.json", bindApi(api.LlmPrompts.LlmPromptPreviewHandler))
+
 			// Exchange Rates
 			apiV1Route.GET("/exchange_rates/latest.json", bindApi(api.ExchangeRates.LatestExchangeRateHandler))
 			apiV1Route.POST("/exchange_rates/user_custom/update.json", bindApi(api.ExchangeRates.UserCustomExchangeRateUpdateHandler))

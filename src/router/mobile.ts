@@ -49,6 +49,9 @@ import TagGroupListPage from '@/views/mobile/tags/GroupListPage.vue';
 
 import TemplateListPage from '@/views/mobile/templates/ListPage.vue';
 
+import LlmPromptListPage from '@/views/mobile/llmprompts/ListPage.vue';
+import LlmPromptEditPage from '@/views/mobile/llmprompts/EditPage.vue';
+
 function asyncResolve(component: unknown): (ctx: Router.RouteCallbackCtx) => void {
     return function({ resolve }: { resolve: ({ component }: { component: unknown }) => void }): void {
         return resolve({
@@ -354,6 +357,21 @@ const routes: Router.RouteParameters[] = [
     {
         path: '/template/edit',
         async: asyncResolve(TransactionEditPage),
+        beforeEnter: [checkLogin]
+    },
+    {
+        path: '/llm_prompt/list',
+        async: asyncResolve(LlmPromptListPage),
+        beforeEnter: [checkLogin]
+    },
+    {
+        path: '/llm_prompt/add',
+        async: asyncResolve(LlmPromptEditPage),
+        beforeEnter: [checkLogin]
+    },
+    {
+        path: '/llm_prompt/edit',
+        async: asyncResolve(LlmPromptEditPage),
         beforeEnter: [checkLogin]
     },
     {

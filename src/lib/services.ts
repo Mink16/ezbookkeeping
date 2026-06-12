@@ -179,6 +179,16 @@ import type {
 import type {
     RecognizedReceiptImageResponse
 } from '@/models/large_language_model.ts';
+import type {
+    LlmPromptListResponse,
+    LlmPromptInfoResponse,
+    LlmPromptCreateRequest,
+    LlmPromptModifyRequest,
+    LlmPromptDeleteRequest,
+    LlmPromptSetActiveRequest,
+    LlmPromptPreviewRequest,
+    LlmPromptPreviewResponse
+} from '@/models/llm_prompt.ts';
 
 import {
     getCurrentToken,
@@ -844,6 +854,27 @@ export default {
             timeout: DEFAULT_LLM_API_TIMEOUT,
             cancelableUuid: cancelableUuid
         } as ApiRequestConfig);
+    },
+    getAllLlmPrompts: (): ApiResponsePromise<LlmPromptListResponse> => {
+        return axios.get<ApiResponse<LlmPromptListResponse>>('v1/custom/llm_prompts/list.json');
+    },
+    getLlmPrompt: ({ id }: { id: string }): ApiResponsePromise<LlmPromptInfoResponse> => {
+        return axios.get<ApiResponse<LlmPromptInfoResponse>>('v1/custom/llm_prompts/get.json?id=' + id);
+    },
+    addLlmPrompt: (req: LlmPromptCreateRequest): ApiResponsePromise<LlmPromptInfoResponse> => {
+        return axios.post<ApiResponse<LlmPromptInfoResponse>>('v1/custom/llm_prompts/add.json', req);
+    },
+    modifyLlmPrompt: (req: LlmPromptModifyRequest): ApiResponsePromise<LlmPromptInfoResponse> => {
+        return axios.post<ApiResponse<LlmPromptInfoResponse>>('v1/custom/llm_prompts/modify.json', req);
+    },
+    deleteLlmPrompt: (req: LlmPromptDeleteRequest): ApiResponsePromise<boolean> => {
+        return axios.post<ApiResponse<boolean>>('v1/custom/llm_prompts/delete.json', req);
+    },
+    setActiveLlmPrompt: (req: LlmPromptSetActiveRequest): ApiResponsePromise<boolean> => {
+        return axios.post<ApiResponse<boolean>>('v1/custom/llm_prompts/set_active.json', req);
+    },
+    previewLlmPrompt: (req: LlmPromptPreviewRequest): ApiResponsePromise<LlmPromptPreviewResponse> => {
+        return axios.post<ApiResponse<LlmPromptPreviewResponse>>('v1/custom/llm_prompts/preview.json', req);
     },
     getLatestExchangeRates: (param: { ignoreError?: boolean }): ApiResponsePromise<LatestExchangeRateResponse> => {
         return axios.get<ApiResponse<LatestExchangeRateResponse>>('v1/exchange_rates/latest.json', {

@@ -21,6 +21,10 @@
                 <v-icon size="20" start :icon="mdiDatabaseClockOutline"/>
                 {{ tt('Browser Cache Management') }}
             </v-tab>
+            <v-tab value="llmPromptSetting" @click="pushRouter('llmPromptSetting')" v-if="isTransactionFromAIImageRecognitionEnabled()">
+                <v-icon size="20" start :icon="mdiTextBoxSearchOutline"/>
+                {{ tt('AI Receipt Recognition Prompts') }}
+            </v-tab>
         </v-tabs>
 
         <v-window class="mt-4 disable-tab-transition" v-model="activeTab">
@@ -43,6 +47,10 @@
             <v-window-item value="browserCacheSetting">
                 <app-browser-cache-setting-tab/>
             </v-window-item>
+
+            <v-window-item value="llmPromptSetting" v-if="isTransactionFromAIImageRecognitionEnabled()">
+                <app-llm-prompt-setting-tab/>
+            </v-window-item>
         </v-window>
     </div>
 </template>
@@ -53,18 +61,22 @@ import AppLockSettingTab from './settings/tabs/AppLockSettingTab.vue';
 import AppStatisticsSettingTab from './settings/tabs/AppStatisticsSettingTab.vue';
 import AppCloudSyncSettingTab from './settings/tabs/AppCloudSyncSettingTab.vue';
 import AppBrowserCacheSettingTab from './settings/tabs/AppBrowserCacheSettingTab.vue';
+import AppLlmPromptSettingTab from './settings/tabs/AppLlmPromptSettingTab.vue';
 
 import { ref } from 'vue';
 import { useRouter, onBeforeRouteUpdate } from 'vue-router';
 
 import { useI18n } from '@/locales/helpers.ts';
 
+import { isTransactionFromAIImageRecognitionEnabled } from '@/lib/server_settings.ts';
+
 import {
     mdiCogOutline,
     mdiLockOpenOutline,
     mdiChartPieOutline,
     mdiCloudOutline,
-    mdiDatabaseClockOutline
+    mdiDatabaseClockOutline,
+    mdiTextBoxSearchOutline
 } from '@mdi/js';
 
 const props = defineProps<{
@@ -82,6 +94,10 @@ const ALL_TABS: string[] = [
     'cloudSyncSetting',
     'browserCacheSetting'
 ];
+
+if (isTransactionFromAIImageRecognitionEnabled()) {
+    ALL_TABS.push('llmPromptSetting');
+}
 
 const activeTab = ref<string>((() => {
     let queryActiveTab = props.initTab || 'basicSetting';

@@ -173,5 +173,13 @@ func updateAllDatabaseTablesStructure(c *core.CliContext) error {
 
 	log.BootInfof(c, "[database.updateAllDatabaseTablesStructure] insights explorer table maintained successfully")
 
+	err = datastore.Container.UserDataStore.SyncStructs(new(models.LlmPrompt))
+
+	if err != nil {
+		return err
+	}
+
+	log.BootInfof(c, "[database.updateAllDatabaseTablesStructure] custom llm prompt table maintained successfully")
+
 	return nil
 }
