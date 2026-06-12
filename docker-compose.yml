@@ -19,10 +19,17 @@ services:
       EBK_USER_ENABLE_REGISTER: "${EBK_USER_ENABLE_REGISTER:-true}"
       # AI/LLM 連携用 MCP サーバー (http://localhost:8081/mcp, Bearer トークン認証)
       EBK_MCP_ENABLE_MCP: "true"
+      # レシート画像 AI 認識 (ホストの Ollama を host.docker.internal 経由で利用)
+      EBK_LLM_TRANSACTION_FROM_AI_IMAGE_RECOGNITION: "true"
+      EBK_LLM_IMAGE_RECOGNITION_LLM_PROVIDER: "ollama"
+      EBK_LLM_IMAGE_RECOGNITION_OLLAMA_SERVER_URL: "http://host.docker.internal:11434/"
+      EBK_LLM_IMAGE_RECOGNITION_OLLAMA_MODEL_ID: "gemma4:latest"
     volumes:
       - ./docker-data/data:/ezbookkeeping/data
       - ./docker-data/storage:/ezbookkeeping/storage
       - ./docker-data/log:/ezbookkeeping/log
+      # gemma4 等の小型モデルでもキー名がブレないよう出力例付きプロンプトに差し替え (本家ファイルは無変更)
+      - ./templates-custom/prompt/receipt_image_recognition.tmpl:/ezbookkeeping/templates/prompt/receipt_image_recognition.tmpl:ro
 
   # 開発・検証用インスタンス (本番の家計簿データに影響を与えずに機能検証する)
   ezbookkeeping-dev:
@@ -41,7 +48,14 @@ services:
       EBK_SERVER_ROOT_URL: "http://localhost:8082/"
       EBK_USER_ENABLE_REGISTER: "true"
       EBK_MCP_ENABLE_MCP: "true"
+      # レシート画像 AI 認識 (ホストの Ollama を host.docker.internal 経由で利用)
+      EBK_LLM_TRANSACTION_FROM_AI_IMAGE_RECOGNITION: "true"
+      EBK_LLM_IMAGE_RECOGNITION_LLM_PROVIDER: "ollama"
+      EBK_LLM_IMAGE_RECOGNITION_OLLAMA_SERVER_URL: "http://host.docker.internal:11434/"
+      EBK_LLM_IMAGE_RECOGNITION_OLLAMA_MODEL_ID: "gemma4:latest"
     volumes:
       - ./docker-data-dev/data:/ezbookkeeping/data
       - ./docker-data-dev/storage:/ezbookkeeping/storage
       - ./docker-data-dev/log:/ezbookkeeping/log
+      # gemma4 等の小型モデルでもキー名がブレないよう出力例付きプロンプトに差し替え (本家ファイルは無変更)
+      - ./templates-custom/prompt/receipt_image_recognition.tmpl:/ezbookkeeping/templates/prompt/receipt_image_recognition.tmpl:ro
