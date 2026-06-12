@@ -51,6 +51,9 @@ import TemplateListPage from '@/views/mobile/templates/ListPage.vue';
 
 import LlmPromptListPage from '@/views/mobile/llmprompts/ListPage.vue';
 import LlmPromptEditPage from '@/views/mobile/llmprompts/EditPage.vue';
+import LlmProfileListPage from '@/views/mobile/llmprofiles/ListPage.vue';
+import LlmProfileEditPage from '@/views/mobile/llmprofiles/EditPage.vue';
+import AdminUserListPage from '@/views/mobile/admin/UserListPage.vue';
 
 function asyncResolve(component: unknown): (ctx: Router.RouteCallbackCtx) => void {
     return function({ resolve }: { resolve: ({ component }: { component: unknown }) => void }): void {
@@ -372,6 +375,26 @@ const routes: Router.RouteParameters[] = [
     {
         path: '/llm_prompt/edit',
         async: asyncResolve(LlmPromptEditPage),
+        beforeEnter: [checkLogin]
+    },
+    {
+        path: '/llm_profile/list',
+        async: asyncResolve(LlmProfileListPage),
+        beforeEnter: [checkLogin]
+    },
+    {
+        path: '/llm_profile/add',
+        async: asyncResolve(LlmProfileEditPage),
+        beforeEnter: [checkLogin]
+    },
+    {
+        path: '/llm_profile/edit',
+        async: asyncResolve(LlmProfileEditPage),
+        beforeEnter: [checkLogin]
+    },
+    {
+        path: '/admin/users',
+        async: asyncResolve(AdminUserListPage),
         beforeEnter: [checkLogin]
     },
     {

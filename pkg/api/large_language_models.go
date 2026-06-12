@@ -9,7 +9,6 @@ import (
 
 	"github.com/mayswind/ezbookkeeping/pkg/core"
 	"github.com/mayswind/ezbookkeeping/pkg/errs"
-	"github.com/mayswind/ezbookkeeping/pkg/llm"
 	"github.com/mayswind/ezbookkeeping/pkg/llm/data"
 	"github.com/mayswind/ezbookkeeping/pkg/log"
 	"github.com/mayswind/ezbookkeeping/pkg/models"
@@ -43,7 +42,10 @@ var (
 
 // RecognizeReceiptImageHandler returns the recognized receipt image result
 func (a *LargeLanguageModelsApi) RecognizeReceiptImageHandler(c *core.WebContext) (any, *errs.Error) {
-	if a.CurrentConfig().ReceiptImageRecognitionLLMConfig == nil || a.CurrentConfig().ReceiptImageRecognitionLLMConfig.LLMProvider == "" || !a.CurrentConfig().TransactionFromAIImageRecognition {
+	// Custom (fork-local): the environment llm config conditions are removed from this guard so that
+	// the feature also works with a database llm connection profile only, provider availability is
+	// checked in getCustomReceiptRecognitionJsonResponse (custom_llm_profiles.go) instead
+	if !a.CurrentConfig().TransactionFromAIImageRecognition {
 		return nil, errs.ErrLargeLanguageModelProviderNotEnabled
 	}
 
@@ -223,7 +225,8 @@ func (a *LargeLanguageModelsApi) RecognizeReceiptImageHandler(c *core.WebContext
 		UserPromptContentType: contentType,
 	}
 
-	llmResponse, err := llm.Container.GetJsonResponseByReceiptImageRecognitionModel(c, c.GetCurrentUid(), a.CurrentConfig(), llmRequest)
+	// Custom (fork-local): use the active llm connection profile instead of the environment-configured provider if it exists
+	llmResponse, err := getCustomReceiptRecognitionJsonResponse(c, c.GetCurrentUid(), a.CurrentConfig(), llmRequest)
 
 	if err != nil {
 		log.Errorf(c, "[large_language_models.RecognizeReceiptImageHandler] failed to get llm response user \"uid:%d\", because %s", uid, err.Error())

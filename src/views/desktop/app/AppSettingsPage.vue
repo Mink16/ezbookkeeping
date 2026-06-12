@@ -25,6 +25,10 @@
                 <v-icon size="20" start :icon="mdiTextBoxSearchOutline"/>
                 {{ tt('AI Receipt Recognition Prompts') }}
             </v-tab>
+            <v-tab value="serverAdminSetting" @click="pushRouter('serverAdminSetting')" v-if="serverAdminStore.administrable">
+                <v-icon size="20" start :icon="mdiAccountCogOutline"/>
+                {{ tt('Server Administration') }}
+            </v-tab>
         </v-tabs>
 
         <v-window class="mt-4 disable-tab-transition" v-model="activeTab">
@@ -51,6 +55,10 @@
             <v-window-item value="llmPromptSetting" v-if="isTransactionFromAIImageRecognitionEnabled()">
                 <app-llm-prompt-setting-tab/>
             </v-window-item>
+
+            <v-window-item value="serverAdminSetting" v-if="serverAdminStore.administrable">
+                <app-server-admin-setting-tab/>
+            </v-window-item>
         </v-window>
     </div>
 </template>
@@ -62,11 +70,14 @@ import AppStatisticsSettingTab from './settings/tabs/AppStatisticsSettingTab.vue
 import AppCloudSyncSettingTab from './settings/tabs/AppCloudSyncSettingTab.vue';
 import AppBrowserCacheSettingTab from './settings/tabs/AppBrowserCacheSettingTab.vue';
 import AppLlmPromptSettingTab from './settings/tabs/AppLlmPromptSettingTab.vue';
+import AppServerAdminSettingTab from './settings/tabs/AppServerAdminSettingTab.vue';
 
 import { ref } from 'vue';
 import { useRouter, onBeforeRouteUpdate } from 'vue-router';
 
 import { useI18n } from '@/locales/helpers.ts';
+
+import { useServerAdminStore } from '@/stores/serverAdmin.ts';
 
 import { isTransactionFromAIImageRecognitionEnabled } from '@/lib/server_settings.ts';
 
@@ -76,7 +87,8 @@ import {
     mdiChartPieOutline,
     mdiCloudOutline,
     mdiDatabaseClockOutline,
-    mdiTextBoxSearchOutline
+    mdiTextBoxSearchOutline,
+    mdiAccountCogOutline
 } from '@mdi/js';
 
 const props = defineProps<{
@@ -98,6 +110,10 @@ const ALL_TABS: string[] = [
 if (isTransactionFromAIImageRecognitionEnabled()) {
     ALL_TABS.push('llmPromptSetting');
 }
+
+const serverAdminStore = useServerAdminStore();
+serverAdminStore.loadPermission({});
+ALL_TABS.push('serverAdminSetting');
 
 const activeTab = ref<string>((() => {
     let queryActiveTab = props.initTab || 'basicSetting';

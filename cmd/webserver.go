@@ -463,10 +463,10 @@ func startWebServer(c *core.CliContext) error {
 			apiV1Route.POST("/insights/explorers/delete.json", bindApi(api.InsightsExplorers.InsightsExplorerDeleteHandler))
 
 			// Large Language Models
-			if config.ReceiptImageRecognitionLLMConfig != nil && config.ReceiptImageRecognitionLLMConfig.LLMProvider != "" {
-				if config.TransactionFromAIImageRecognition {
-					apiV1Route.POST("/llm/transactions/recognize_receipt_image.json", bindApi(api.LargeLanguageModels.RecognizeReceiptImageHandler))
-				}
+			// Custom (fork-local): the environment llm config condition is removed so that the recognition
+			// route is also available when only a database llm connection profile is configured
+			if config.TransactionFromAIImageRecognition {
+				apiV1Route.POST("/llm/transactions/recognize_receipt_image.json", bindApi(api.LargeLanguageModels.RecognizeReceiptImageHandler))
 			}
 
 			// Custom (fork-local): LLM receipt recognition system prompts
@@ -477,6 +477,21 @@ func startWebServer(c *core.CliContext) error {
 			apiV1Route.POST("/custom/llm_prompts/delete.json", bindApi(api.LlmPrompts.LlmPromptDeleteHandler))
 			apiV1Route.POST("/custom/llm_prompts/set_active.json", bindApi(api.LlmPrompts.LlmPromptSetActiveHandler))
 			apiV1Route.POST("/custom/llm_prompts/preview.json", bindApi(api.LlmPrompts.LlmPromptPreviewHandler))
+
+			// Custom (fork-local): server admins
+			apiV1Route.GET("/custom/admin/status.json", bindApi(api.CustomAdmins.AdminStatusHandler))
+			apiV1Route.GET("/custom/admin/users/list.json", bindApi(api.CustomAdmins.AdminUserListHandler))
+			apiV1Route.POST("/custom/admin/users/grant.json", bindApi(api.CustomAdmins.AdminGrantHandler))
+			apiV1Route.POST("/custom/admin/users/revoke.json", bindApi(api.CustomAdmins.AdminRevokeHandler))
+
+			// Custom (fork-local): LLM connection profiles
+			apiV1Route.GET("/custom/llm_profiles/list.json", bindApi(api.CustomLlmProfiles.ProfileListHandler))
+			apiV1Route.GET("/custom/llm_profiles/get.json", bindApi(api.CustomLlmProfiles.ProfileGetHandler))
+			apiV1Route.POST("/custom/llm_profiles/add.json", bindApi(api.CustomLlmProfiles.ProfileCreateHandler))
+			apiV1Route.POST("/custom/llm_profiles/modify.json", bindApi(api.CustomLlmProfiles.ProfileModifyHandler))
+			apiV1Route.POST("/custom/llm_profiles/delete.json", bindApi(api.CustomLlmProfiles.ProfileDeleteHandler))
+			apiV1Route.POST("/custom/llm_profiles/set_active.json", bindApi(api.CustomLlmProfiles.ProfileSetActiveHandler))
+			apiV1Route.POST("/custom/llm_profiles/test.json", bindApi(api.CustomLlmProfiles.ProfileTestHandler))
 
 			// Exchange Rates
 			apiV1Route.GET("/exchange_rates/latest.json", bindApi(api.ExchangeRates.LatestExchangeRateHandler))

@@ -12,6 +12,9 @@ import { useOverviewStore } from './overview.ts';
 import { useStatisticsStore } from './statistics.ts';
 import { useExplorersStore } from './explorer.ts';
 import { useExchangeRatesStore } from './exchangeRates.ts';
+import { useLlmPromptsStore } from './llmPrompt.ts';
+import { useLlmProfilesStore } from './llmProfile.ts';
+import { useServerAdminStore } from './serverAdmin.ts';
 
 import type { AuthResponse, RegisterResponse } from '@/models/auth_response.ts';
 import type {
@@ -52,6 +55,9 @@ export const useRootStore = defineStore('root', () => {
     const statisticsStore = useStatisticsStore();
     const explorersStore = useExplorersStore();
     const exchangeRatesStore = useExchangeRatesStore();
+    const llmPromptsStore = useLlmPromptsStore();
+    const llmProfilesStore = useLlmProfilesStore();
+    const serverAdminStore = useServerAdminStore();
 
     const currentNotification = ref<string | null>(null);
 
@@ -70,6 +76,9 @@ export const useRootStore = defineStore('root', () => {
         transactionCategoriesStore.resetTransactionCategories();
         transactionTemplatesStore.resetTransactionTemplates();
         accountsStore.resetAccounts();
+        llmPromptsStore.resetLlmPrompts();
+        llmProfilesStore.resetLlmProfiles();
+        serverAdminStore.resetServerAdmin();
 
         if (resetUserInfoAndSettings) {
             userStore.resetUserBasicInfo();

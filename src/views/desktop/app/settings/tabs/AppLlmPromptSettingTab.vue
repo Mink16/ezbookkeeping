@@ -1,5 +1,7 @@
 <template>
-    <v-row>
+    <app-llm-profile-setting-section v-if="serverAdminStore.administrable" />
+
+    <v-row :class="{ 'mt-0': serverAdminStore.administrable }">
         <v-col cols="12">
             <v-card>
                 <template #title>
@@ -105,6 +107,7 @@
 import ConfirmDialog from '@/components/desktop/ConfirmDialog.vue';
 import SnackBar from '@/components/desktop/SnackBar.vue';
 import LlmPromptEditDialog from '@/views/desktop/app/settings/dialogs/LlmPromptEditDialog.vue';
+import AppLlmProfileSettingSection from '@/views/desktop/app/settings/tabs/AppLlmProfileSettingSection.vue';
 
 import { ref, computed, useTemplateRef, onMounted } from 'vue';
 
@@ -113,6 +116,7 @@ import { useI18n } from '@/locales/helpers.ts';
 import { useLlmPromptListPageBase } from '@/views/base/llmprompts/LlmPromptListPageBase.ts';
 
 import { useLlmPromptsStore } from '@/stores/llmPrompt.ts';
+import { useServerAdminStore } from '@/stores/serverAdmin.ts';
 
 import { DEFAULT_LLM_PROMPT_ID, type LlmPrompt } from '@/models/llm_prompt.ts';
 
@@ -139,6 +143,7 @@ const {
 } = useLlmPromptListPageBase();
 
 const llmPromptsStore = useLlmPromptsStore();
+const serverAdminStore = useServerAdminStore();
 
 const editDialog = useTemplateRef<LlmPromptEditDialogType>('editDialog');
 const confirmDialog = useTemplateRef<ConfirmDialogType>('confirmDialog');

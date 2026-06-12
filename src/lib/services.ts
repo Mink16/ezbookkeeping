@@ -189,6 +189,22 @@ import type {
     LlmPromptPreviewRequest,
     LlmPromptPreviewResponse
 } from '@/models/llm_prompt.ts';
+import type {
+    LlmProfileListResponse,
+    LlmProfileInfoResponse,
+    LlmProfileCreateRequest,
+    LlmProfileModifyRequest,
+    LlmProfileDeleteRequest,
+    LlmProfileSetActiveRequest,
+    LlmProfileTestRequest,
+    LlmProfileTestResponse
+} from '@/models/llm_profile.ts';
+import type {
+    AdminStatusResponse,
+    AdminUserInfoResponse,
+    AdminGrantRequest,
+    AdminRevokeRequest
+} from '@/models/server_admin.ts';
 
 import {
     getCurrentToken,
@@ -875,6 +891,43 @@ export default {
     },
     previewLlmPrompt: (req: LlmPromptPreviewRequest): ApiResponsePromise<LlmPromptPreviewResponse> => {
         return axios.post<ApiResponse<LlmPromptPreviewResponse>>('v1/custom/llm_prompts/preview.json', req);
+    },
+    getServerAdminStatus: (): ApiResponsePromise<AdminStatusResponse> => {
+        return axios.get<ApiResponse<AdminStatusResponse>>('v1/custom/admin/status.json', {
+            ignoreError: true
+        } as ApiRequestConfig);
+    },
+    getAllServerUsers: (): ApiResponsePromise<AdminUserInfoResponse[]> => {
+        return axios.get<ApiResponse<AdminUserInfoResponse[]>>('v1/custom/admin/users/list.json');
+    },
+    grantServerAdmin: (req: AdminGrantRequest): ApiResponsePromise<boolean> => {
+        return axios.post<ApiResponse<boolean>>('v1/custom/admin/users/grant.json', req);
+    },
+    revokeServerAdmin: (req: AdminRevokeRequest): ApiResponsePromise<boolean> => {
+        return axios.post<ApiResponse<boolean>>('v1/custom/admin/users/revoke.json', req);
+    },
+    getAllLlmProfiles: (): ApiResponsePromise<LlmProfileListResponse> => {
+        return axios.get<ApiResponse<LlmProfileListResponse>>('v1/custom/llm_profiles/list.json');
+    },
+    getLlmProfile: ({ id }: { id: string }): ApiResponsePromise<LlmProfileInfoResponse> => {
+        return axios.get<ApiResponse<LlmProfileInfoResponse>>('v1/custom/llm_profiles/get.json?id=' + id);
+    },
+    addLlmProfile: (req: LlmProfileCreateRequest): ApiResponsePromise<LlmProfileInfoResponse> => {
+        return axios.post<ApiResponse<LlmProfileInfoResponse>>('v1/custom/llm_profiles/add.json', req);
+    },
+    modifyLlmProfile: (req: LlmProfileModifyRequest): ApiResponsePromise<LlmProfileInfoResponse> => {
+        return axios.post<ApiResponse<LlmProfileInfoResponse>>('v1/custom/llm_profiles/modify.json', req);
+    },
+    deleteLlmProfile: (req: LlmProfileDeleteRequest): ApiResponsePromise<boolean> => {
+        return axios.post<ApiResponse<boolean>>('v1/custom/llm_profiles/delete.json', req);
+    },
+    setActiveLlmProfile: (req: LlmProfileSetActiveRequest): ApiResponsePromise<boolean> => {
+        return axios.post<ApiResponse<boolean>>('v1/custom/llm_profiles/set_active.json', req);
+    },
+    testLlmProfile: (req: LlmProfileTestRequest): ApiResponsePromise<LlmProfileTestResponse> => {
+        return axios.post<ApiResponse<LlmProfileTestResponse>>('v1/custom/llm_profiles/test.json', req, {
+            timeout: DEFAULT_LLM_API_TIMEOUT
+        } as ApiRequestConfig);
     },
     getLatestExchangeRates: (param: { ignoreError?: boolean }): ApiResponsePromise<LatestExchangeRateResponse> => {
         return axios.get<ApiResponse<LatestExchangeRateResponse>>('v1/exchange_rates/latest.json', {

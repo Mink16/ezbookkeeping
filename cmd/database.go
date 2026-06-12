@@ -181,5 +181,21 @@ func updateAllDatabaseTablesStructure(c *core.CliContext) error {
 
 	log.BootInfof(c, "[database.updateAllDatabaseTablesStructure] custom llm prompt table maintained successfully")
 
+	err = datastore.Container.UserStore.SyncStructs(new(models.CustomAdmin))
+
+	if err != nil {
+		return err
+	}
+
+	log.BootInfof(c, "[database.updateAllDatabaseTablesStructure] custom admin table maintained successfully")
+
+	err = datastore.Container.UserStore.SyncStructs(new(models.CustomLlmProfile))
+
+	if err != nil {
+		return err
+	}
+
+	log.BootInfof(c, "[database.updateAllDatabaseTablesStructure] custom llm profile table maintained successfully")
+
 	return nil
 }

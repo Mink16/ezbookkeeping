@@ -10,6 +10,8 @@
             <f7-list-item :title="tt('Transaction Templates')" link="/template/list"></f7-list-item>
             <f7-list-item :title="tt('Scheduled Transactions')" link="/schedule/list" v-if="isUserScheduledTransactionEnabled()"></f7-list-item>
             <f7-list-item :title="tt('AI Receipt Recognition Prompts')" link="/llm_prompt/list" v-if="isTransactionFromAIImageRecognitionEnabled()"></f7-list-item>
+            <f7-list-item :title="tt('AI Recognition LLM Connections')" link="/llm_profile/list" v-if="isTransactionFromAIImageRecognitionEnabled() && serverAdminStore.administrable"></f7-list-item>
+            <f7-list-item :title="tt('User Management')" link="/admin/users" v-if="serverAdminStore.administrable"></f7-list-item>
             <f7-list-item :title="tt('Data Management')" link="/user/data/management"></f7-list-item>
             <f7-list-item :title="tt('Two-Factor Authentication')" link="/user/2fa"></f7-list-item>
             <f7-list-item :title="tt('Device & Sessions')" link="/user/sessions"></f7-list-item>
@@ -129,6 +131,7 @@ import { useRootStore } from '@/stores/index.ts';
 import { useSettingsStore } from '@/stores/setting.ts';
 import { useUserStore } from '@/stores/user.ts';
 import { useExchangeRatesStore } from '@/stores/exchangeRates.ts';
+import { useServerAdminStore } from '@/stores/serverAdmin.ts';
 
 import { findNameByValue } from '@/lib/common.ts';
 import { parseDateTimeFromUnixTime } from '@/lib/datetime.ts';
@@ -148,6 +151,8 @@ const rootStore = useRootStore();
 const settingsStore = useSettingsStore();
 const userStore = useUserStore();
 const exchangeRatesStore = useExchangeRatesStore();
+const serverAdminStore = useServerAdminStore();
+serverAdminStore.loadPermission({});
 
 const version = `${getClientDisplayVersion()}`;
 
