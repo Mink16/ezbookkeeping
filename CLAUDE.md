@@ -26,7 +26,7 @@ docker compose build && docker compose up -d    # デプロイ反映 (本番 808
 - `pkg/api/` — ハンドラ層。シグネチャは `func (a *XxxApi) Handler(c *core.WebContext) (any, *errs.Error)`、各 API はシングルトン変数(`var Accounts = &AccountsApi{...}`)
 - `pkg/services/` — ビジネスロジック。`func (s *XxxService) Method(c core.Context, uid int64, ...)`
 - `pkg/models/` — XORM モデル(タグで DB カラム定義)+ リクエスト/レスポンス DTO
-- `pkg/datastore/` — DB 抽象化(ORM は xorm)。スキーマ変更は **マイグレーションファイル不要**: モデルを変更し `cmd/database.go` の `updateAllDatabaseTablesStructure()` に `SyncStructs(new(models.Xxx))` があれば自動同期
+- `pkg/datastore/` — DB 抽象化(ORM は xorm)。スキーマ変更は **マイグレーションファイル不要**: モデルを変更し `cmd/database.go` の `updateAllDatabaseTablesStructure()` に `SyncStructs(new(models.Xxx))` があれば自動同期。**頭字語フィールド(URL/API/ID)は SnakeMapper が `base_u_r_l` に分解し `Cols()` と不一致になる**ため明示カラム名タグ(`xorm:"'base_url' ..."`)必須 — `pkg/models/custom_model_column_names_test.go` が検出する
 - `pkg/settings/` — 設定。`conf/ezbookkeeping.ini` を `EBK_<セクション>_<キー>` 環境変数で上書きできる(例: `EBK_SERVER_HTTP_PORT`)
 
 新 API エンドポイント追加で触るファイル: `pkg/models/xxx.go` → `pkg/services/xxx.go` → `pkg/api/xxx.go` → `cmd/webserver.go`(ルート登録)。テストは実装と同じディレクトリの `*_test.go`(testify/assert、テーブル駆動)。

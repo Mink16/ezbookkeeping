@@ -25,6 +25,7 @@ description: ezBookkeeping への独自機能追加の定型フロー(ブラン�
 - base の戻り値に項目を追加したら、**mobile と desktop 両方の Vue の分割代入(`const { ... } = useXxxPageBase()`)にも追加する**。テンプレートだけ書くと TS2339 になる(LSP 診断が即座に教えてくれる)
 - 既存ファイルの変更は「ルート登録・i18n・cmd/database.go」の 3 箇所に収まるのが理想。それ以外の既存ファイルを大きく書き換えたくなったら、コンフリクト面が増える設計なので一度立ち止まって代替を検討する
 - i18n キーは `en.json` と `ja.json` のみに追加する
+- **XORM モデルで頭字語を含むフィールド(URL/API/ID 等)には明示カラム名タグ必須**: SnakeMapper は `BaseURL`→`base_u_r_l` のように分解するため、`Cols("base_url")` が実カラム名と一致せず**更新が黙って捨てられる**(過去の実バグ: 86a617cc)。`xorm:"'base_url' ..."` 形式で宣言し、新モデルは `pkg/models/custom_model_column_names_test.go` のチェック対象リストに追加する。SyncStructs で追加される NOT NULL カラムには `DEFAULT ''` を付ける(SQLite の ALTER が失敗するため)
 
 ## 3. 実装
 
@@ -50,6 +51,10 @@ docker compose build ezbookkeeping-dev && docker compose up -d ezbookkeeping-dev
 ```
 
 - Playwright で http://localhost:8082 にログイン(`dev` / `ezbk-dev-2026`)し、**追加した機能を実際に操作して**スクリーンショットまたはスナップショットで確認する
+- **更新系 API(modify/update)はラウンドトリップで検証する**: 全編集可能フィールドを**保存済みと異なる値**に変更 → 保存 → **再取得(get/list)または DB 直読み(`sqlite3 docker-data-dev/data/ezbookkeeping.db`)で永続化を確認**する。レスポンスはリクエストのエコーであることが多く保存失敗を検出できない。同値のまま送る・一部フィールドだけ変える検証は、フィールド単位の保存バグ(Cols 名不一致など)を素通しする(過去の実バグ: 86a617cc)
+- 新テーブルを追加したら dev で `.schema <テーブル名>` を実行し、**実カラム名が想定どおりか目視確認**する
+- UI の編集フォームは「開いて表示確認」で終わらせず、**値を変更 → 保存 → 再度開いて反映確認**まで行う
+- 設定値に幅がある機能(モデル名・外部 URL 等)は、env の既定値だけでなく**ユーザーが実際に使いそうな別の値**(例: 大型モデル)でも 1 回は通す(タイムアウト等の限界はそこで露見する)
 - テストデータが必要なら `ezbookkeeping-dev` MCP(`add_transaction` など)で投入する
 - mobile UI も対象の機能なら、ブラウザを縮小するのではなく http://localhost:8082/mobile を直接開いて確認する
 - **mobile はディープリンクが効かない**(`/mobile#/about` を直接開いてもホームに着地する)。Framework7 の画面遷移は UI のタブ・リストをクリックして辿ること
