@@ -24,6 +24,8 @@ services:
       EBK_LLM_IMAGE_RECOGNITION_LLM_PROVIDER: "ollama"
       EBK_LLM_IMAGE_RECOGNITION_OLLAMA_SERVER_URL: "http://host.docker.internal:11434/"
       EBK_LLM_IMAGE_RECOGNITION_OLLAMA_MODEL_ID: "gemma4:latest"
+      # gemma4:31b 等の大型ローカルモデルは認識に 60 秒超かかるためタイムアウトを延長
+      EBK_LLM_IMAGE_RECOGNITION_REQUEST_TIMEOUT: "300000"
       # fork 独自: サーバー管理者のブートストラップ (カンマ区切りユーザー名、.env で設定)
       EBK_CUSTOM_ADMIN_USERNAMES: "${EBK_CUSTOM_ADMIN_USERNAMES:-}"
     volumes:
@@ -55,6 +57,8 @@ services:
       EBK_LLM_IMAGE_RECOGNITION_LLM_PROVIDER: "ollama"
       EBK_LLM_IMAGE_RECOGNITION_OLLAMA_SERVER_URL: "http://host.docker.internal:11434/"
       EBK_LLM_IMAGE_RECOGNITION_OLLAMA_MODEL_ID: "gemma4:latest"
+      # gemma4:31b 等の大型ローカルモデルは認識に 60 秒超かかるためタイムアウトを延長
+      EBK_LLM_IMAGE_RECOGNITION_REQUEST_TIMEOUT: "300000"
       # fork 独自: dev ユーザーをサーバー管理者にする (LLM 接続プロファイル管理の検証用)
       EBK_CUSTOM_ADMIN_USERNAMES: "dev"
     volumes:

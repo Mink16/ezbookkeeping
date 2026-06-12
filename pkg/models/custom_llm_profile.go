@@ -5,14 +5,16 @@ package models
 // {base_url, api_key, api_version, model_id, max_tokens} columns
 // (see buildLLMConfigFromCustomProfile in pkg/api/custom_llm_profiles.go for the mapping)
 type CustomLlmProfile struct {
-	ProfileId       int64  `xorm:"PK"`
-	Deleted         bool   `xorm:"INDEX(IDX_custom_llm_profile_deleted_is_active) NOT NULL"`
-	Name            string `xorm:"VARCHAR(64) NOT NULL"`
-	Provider        string `xorm:"VARCHAR(32) NOT NULL"`
-	BaseURL         string `xorm:"VARCHAR(255) NOT NULL DEFAULT ''"`
-	APIKey          string `xorm:"VARCHAR(512) NOT NULL DEFAULT ''"` // encrypted by utils.EncryptSecret, never returned to clients
-	APIVersion      string `xorm:"VARCHAR(32) NOT NULL DEFAULT ''"`
-	ModelID         string `xorm:"VARCHAR(128) NOT NULL"`
+	ProfileId int64  `xorm:"PK"`
+	Deleted   bool   `xorm:"INDEX(IDX_custom_llm_profile_deleted_is_active) NOT NULL"`
+	Name      string `xorm:"VARCHAR(64) NOT NULL"`
+	Provider  string `xorm:"VARCHAR(32) NOT NULL"`
+	// the acronym fields need explicit column names because the default xorm snake mapper
+	// would generate "base_u_r_l" / "a_p_i_key" / "model_i_d" and break the Cols() usages in the service
+	BaseURL         string `xorm:"'base_url' VARCHAR(255) NOT NULL DEFAULT ''"`
+	APIKey          string `xorm:"'api_key' VARCHAR(512) NOT NULL DEFAULT ''"` // encrypted by utils.EncryptSecret, never returned to clients
+	APIVersion      string `xorm:"'api_version' VARCHAR(32) NOT NULL DEFAULT ''"`
+	ModelID         string `xorm:"'model_id' VARCHAR(128) NOT NULL DEFAULT ''"`
 	MaxTokens       uint32 `xorm:"NOT NULL DEFAULT 0"` // 0 means using the upstream default (1024)
 	IsActive        bool   `xorm:"INDEX(IDX_custom_llm_profile_deleted_is_active) NOT NULL"`
 	CreatedUnixTime int64

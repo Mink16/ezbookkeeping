@@ -135,6 +135,8 @@ func (a *CustomLlmProfilesApi) ProfileCreateHandler(c *core.WebContext) (any, *e
 		MaxTokens:  profileCreateReq.MaxTokens,
 	}
 
+	normalizeCustomLlmProfileFields(profile)
+
 	err = a.llmProfiles.CreateProfile(c, profile)
 
 	if err != nil {
@@ -194,6 +196,13 @@ func (a *CustomLlmProfilesApi) ProfileModifyHandler(c *core.WebContext) (any, *e
 		ModelID:    profileModifyReq.ModelID,
 		MaxTokens:  profileModifyReq.MaxTokens,
 		IsActive:   existedProfile.IsActive,
+	}
+
+	normalizeCustomLlmProfileFields(profile)
+
+	if profile.APIKey != existedProfile.APIKey {
+		// normalization cleared a stored key not used by the new provider, it must be written out
+		updateAPIKey = true
 	}
 
 	err = a.llmProfiles.ModifyProfile(c, profile, updateAPIKey)
@@ -339,6 +348,33 @@ func validateCustomLlmProfileFields(providerType string, baseURL string, hasAPIK
 	return nil
 }
 
+// normalizeCustomLlmProfileFields clears the fields not used by the given provider, so that values
+// left over from another provider (e.g. an api key entered before switching to ollama) are never stored.
+// NOTE: keep in sync with validateCustomLlmProfileFields above and LLM_PROVIDER_FIELDS in src/lib/llm_profile.ts
+func normalizeCustomLlmProfileFields(profile *models.CustomLlmProfile) {
+	switch profile.Provider {
+	case settings.OpenAILLMProvider, settings.OpenRouterLLMProvider, settings.GoogleAILLMProvider:
+		profile.BaseURL = ""
+		profile.APIVersion = ""
+		profile.MaxTokens = 0
+	case settings.OpenAICompatibleLLMProvider:
+		profile.APIVersion = ""
+		profile.MaxTokens = 0
+	case settings.AnthropicLLMProvider:
+		profile.BaseURL = ""
+		profile.APIVersion = ""
+	case settings.AnthropicCompatibleLLMProvider:
+		// all fields are used
+	case settings.OllamaLLMProvider:
+		profile.APIKey = ""
+		profile.APIVersion = ""
+		profile.MaxTokens = 0
+	case settings.LMStudioLLMProvider:
+		profile.APIVersion = ""
+		profile.MaxTokens = 0
+	}
+}
+
 // inheritCommonLLMConfigFields copies the common fields (request timeout, proxy and tls verification)
 // from the environment llm config, or applies the upstream defaults when the environment config is absent
 func inheritCommonLLMConfigFields(target *settings.LLMConfig, envLLMConfig *settings.LLMConfig) {
@@ -420,6 +456,13 @@ func getCustomReceiptRecognitionJsonResponse(c *core.WebContext, uid int64, conf
 
 	if activeProfile == nil {
 		return llm.Container.GetJsonResponseByReceiptImageRecognitionModel(c, uid, config, request)
+	}
+
+	// defense in depth: an invalid stored profile (e.g. an empty server url) must fail gracefully here
+	// instead of panicking inside the upstream provider implementations
+	if errResp := validateCustomLlmProfileFields(activeProfile.Provider, activeProfile.BaseURL, activeProfile.APIKey != "", activeProfile.ModelID); errResp != nil {
+		log.Errorf(c, "[custom_llm_profiles.getCustomReceiptRecognitionJsonResponse] active llm profile \"id:%d\" is invalid for user \"uid:%d\", because %s", activeProfile.ProfileId, uid, errResp.Message)
+		return nil, errResp
 	}
 
 	decryptedAPIKey := ""
