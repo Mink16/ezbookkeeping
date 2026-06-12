@@ -669,6 +669,7 @@
 
     <edit-dialog ref="editDialog" :type="TransactionEditPageType.Transaction" />
     <a-i-image-recognition-dialog ref="aiImageRecognitionDialog" />
+    <receipt-recognition-confirm-dialog ref="receiptRecognitionConfirmDialog" />
     <import-dialog ref="importDialog" :persistent="true" />
 
     <v-dialog width="800" v-model="showFilterAccountDialog">
@@ -697,6 +698,7 @@ import ConfirmDialog from '@/components/desktop/ConfirmDialog.vue';
 import SnackBar from '@/components/desktop/SnackBar.vue';
 import EditDialog from './list/dialogs/EditDialog.vue';
 import AIImageRecognitionDialog from './list/dialogs/AIImageRecognitionDialog.vue';
+import ReceiptRecognitionConfirmDialog from './list/dialogs/ReceiptRecognitionConfirmDialog.vue';
 import ImportDialog from './import/ImportDialog.vue';
 import AccountFilterSettingsCard from '@/views/desktop/common/cards/AccountFilterSettingsCard.vue';
 import CategoryFilterSettingsCard from '@/views/desktop/common/cards/CategoryFilterSettingsCard.vue';
@@ -768,6 +770,7 @@ import {
     transactionTypeToCategoryType
 } from '@/lib/category.ts';
 import { allTransactionPictures } from '@/lib/transaction.ts';
+import { shouldShowReceiptConfirmation } from '@/lib/custom_receipt_recognition.ts';
 import { isDataExportingEnabled, isDataImportingEnabled, isTransactionFromAIImageRecognitionEnabled } from '@/lib/server_settings.ts';
 import { scrollToSelectedItem, startDownloadFile } from '@/lib/ui/common.ts';
 import logger from '@/lib/logger.ts';
@@ -810,6 +813,7 @@ type ConfirmDialogType = InstanceType<typeof ConfirmDialog>;
 type SnackBarType = InstanceType<typeof SnackBar>;
 type EditDialogType = InstanceType<typeof EditDialog>;
 type AIImageRecognitionDialogType = InstanceType<typeof AIImageRecognitionDialog>;
+type ReceiptRecognitionConfirmDialogType = InstanceType<typeof ReceiptRecognitionConfirmDialog>;
 type ImportDialogType = InstanceType<typeof ImportDialog>;
 
 interface TransactionListDisplayTotalAmount {
@@ -901,6 +905,7 @@ const confirmDialog = useTemplateRef<ConfirmDialogType>('confirmDialog');
 const snackbar = useTemplateRef<SnackBarType>('snackbar');
 const editDialog = useTemplateRef<EditDialogType>('editDialog');
 const aiImageRecognitionDialog = useTemplateRef<AIImageRecognitionDialogType>('aiImageRecognitionDialog');
+const receiptRecognitionConfirmDialog = useTemplateRef<ReceiptRecognitionConfirmDialogType>('receiptRecognitionConfirmDialog');
 const importDialog = useTemplateRef<ImportDialogType>('importDialog');
 
 const activeTab = ref<string>('transactionPage');
@@ -1643,6 +1648,21 @@ function addByRecognizingImage(): void {
     aiImageRecognitionDialog.value?.open().then(result => {
         const recognizedResponse = result.response;
         const autoUploadRecognizedImage = settingsStore.appSettings.autoUploadTransactionPictureForAIRecognition;
+
+        if (shouldShowReceiptConfirmation(recognizedResponse)) {
+            receiptRecognitionConfirmDialog.value?.open(result).then(result => {
+                if (result && result.message) {
+                    snackbar.value?.showMessage(result.message);
+                }
+
+                reload(false, false);
+            }).catch(error => {
+                if (error) {
+                    snackbar.value?.showError(error);
+                }
+            });
+            return;
+        }
 
         editDialog.value?.open({
             time: recognizedResponse.time,

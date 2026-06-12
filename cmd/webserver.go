@@ -493,6 +493,9 @@ func startWebServer(c *core.CliContext) error {
 			apiV1Route.POST("/custom/llm_profiles/set_active.json", bindApi(api.CustomLlmProfiles.ProfileSetActiveHandler))
 			apiV1Route.POST("/custom/llm_profiles/test.json", bindApi(api.CustomLlmProfiles.ProfileTestHandler))
 
+			// Custom (fork-local): LLM receipt recognition with item details and geocoding
+			apiV1Route.POST("/custom/llm/transactions/recognize_receipt_image_details.json", bindApi(api.CustomReceiptRecognition.RecognizeReceiptImageDetailsHandler))
+
 			// Exchange Rates
 			apiV1Route.GET("/exchange_rates/latest.json", bindApi(api.ExchangeRates.LatestExchangeRateHandler))
 			apiV1Route.POST("/exchange_rates/user_custom/update.json", bindApi(api.ExchangeRates.UserCustomExchangeRateUpdateHandler))

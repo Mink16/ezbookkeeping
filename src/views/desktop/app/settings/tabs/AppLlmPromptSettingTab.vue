@@ -22,6 +22,7 @@
                 </template>
 
                 <v-card-text>
+                    <div class="text-body-2 text-medium-emphasis mb-3">{{ tt('Custom prompts are not applied to the multi-item receipt recognition flow currently in use') }}</div>
                     <v-table class="llm-prompts-table" :hover="!loading">
                         <thead>
                         <tr>

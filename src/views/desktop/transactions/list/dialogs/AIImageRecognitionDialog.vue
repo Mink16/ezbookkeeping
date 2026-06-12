@@ -57,17 +57,17 @@ import { useTheme } from 'vuetify';
 
 import { useI18n } from '@/locales/helpers.ts';
 
-import { useTransactionsStore } from '@/stores/transaction.ts';
+import { useCustomReceiptRecognitionStore } from '@/stores/customReceiptRecognition.ts';
 
 import { ImageUploadQualityType } from '@/core/image.ts';
 import { KnownFileType } from '@/core/file.ts';
 import { ThemeType } from '@/core/theme.ts';
 import { SUPPORTED_IMAGE_EXTENSIONS } from '@/consts/file.ts';
 
-import type { RecognizedReceiptImageResponse } from '@/models/large_language_model.ts';
+import type { RecognizedReceiptDetailsResponse } from '@/models/custom_receipt_recognition.ts';
 
 export interface AIImageRecognitionResult {
-    response: RecognizedReceiptImageResponse;
+    response: RecognizedReceiptDetailsResponse;
     imageFile: File;
 }
 
@@ -81,7 +81,7 @@ const theme = useTheme();
 
 const { tt } = useI18n();
 
-const transactionsStore = useTransactionsStore();
+const customReceiptRecognitionStore = useCustomReceiptRecognitionStore();
 
 const snackbar = useTemplateRef<SnackBarType>('snackbar');
 const imageInput = useTemplateRef<HTMLInputElement>('imageInput');
@@ -166,7 +166,7 @@ function recognize(): void {
     cancelRecognizingUuid.value = generateRandomUUID();
     recognizing.value = true;
 
-    transactionsStore.recognizeReceiptImage({
+    customReceiptRecognitionStore.recognizeReceiptImageDetails({
         imageFile: imageFile.value,
         cancelableUuid: cancelRecognizingUuid.value
     }).then(response => {
@@ -193,7 +193,7 @@ function cancelRecognize(): void {
         return;
     }
 
-    transactionsStore.cancelRecognizeReceiptImage(cancelRecognizingUuid.value);
+    customReceiptRecognitionStore.cancelRecognizeReceiptImageDetails(cancelRecognizingUuid.value);
     recognizing.value = false;
     cancelRecognizingUuid.value = undefined;
 

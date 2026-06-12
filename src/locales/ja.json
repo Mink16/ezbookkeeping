@@ -2715,6 +2715,7 @@
     "Numeric Overflow": "数値オーバーフロー",
     "Click to close": "クリックして閉じる",
     "AI Receipt Recognition Prompts": "AIレシート認識プロンプト",
+    "Custom prompts are not applied to the multi-item receipt recognition flow currently in use": "現在使用中の複数明細レシート認識フローでは、カスタムプロンプトは適用されません",
     "Default Prompt": "デフォルトプロンプト",
     "Add Prompt": "プロンプトを追加",
     "Edit Prompt": "プロンプトを編集",
@@ -2800,5 +2801,19 @@
     "User list has been updated": "ユーザー一覧を更新しました",
     "Unable to retrieve user list": "ユーザー一覧を取得できません",
     "Unable to grant administrator privileges": "管理者権限を付与できません",
-    "Unable to revoke administrator privileges": "管理者権限を解除できません"
+    "Unable to revoke administrator privileges": "管理者権限を解除できません",
+    "Confirm Recognition Result": "認識結果の確認",
+    "Register as One Transaction": "1件にまとめて登録",
+    "Register Items Separately": "明細ごとに登録",
+    "Receipt Total": "支払総額",
+    "Items Total": "明細合計",
+    "Adjustment": "調整",
+    "Consumption Tax": "消費税",
+    "Distribute Difference to Items": "差額を明細に按分",
+    "Attach Geolocation": "位置情報を付与",
+    "Resolved Location": "解決された所在地",
+    "The total of selected items differs from the receipt total": "選択した明細の合計が支払総額と異なります",
+    "Retry Failed Items": "失敗した明細を再試行",
+    "All transactions have been saved": "すべての取引を登録しました",
+    "Unable to save some transactions": "一部の取引を登録できませんでした"
 }

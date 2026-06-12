@@ -197,5 +197,13 @@ func updateAllDatabaseTablesStructure(c *core.CliContext) error {
 
 	log.BootInfof(c, "[database.updateAllDatabaseTablesStructure] custom llm profile table maintained successfully")
 
+	err = datastore.Container.UserStore.SyncStructs(new(models.CustomGeocodingCache))
+
+	if err != nil {
+		return err
+	}
+
+	log.BootInfof(c, "[database.updateAllDatabaseTablesStructure] custom geocoding cache table maintained successfully")
+
 	return nil
 }

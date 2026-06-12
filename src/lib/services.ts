@@ -180,6 +180,9 @@ import type {
     RecognizedReceiptImageResponse
 } from '@/models/large_language_model.ts';
 import type {
+    RecognizedReceiptDetailsResponse
+} from '@/models/custom_receipt_recognition.ts';
+import type {
     LlmPromptListResponse,
     LlmPromptInfoResponse,
     LlmPromptCreateRequest,
@@ -865,6 +868,14 @@ export default {
     },
     recognizeReceiptImage: ({ imageFile, cancelableUuid }: { imageFile: File, cancelableUuid?: string }): ApiResponsePromise<RecognizedReceiptImageResponse> => {
         return axios.postForm<ApiResponse<RecognizedReceiptImageResponse>>('v1/llm/transactions/recognize_receipt_image.json', {
+            image: imageFile
+        }, {
+            timeout: DEFAULT_LLM_API_TIMEOUT,
+            cancelableUuid: cancelableUuid
+        } as ApiRequestConfig);
+    },
+    recognizeReceiptImageDetails: ({ imageFile, cancelableUuid }: { imageFile: File, cancelableUuid?: string }): ApiResponsePromise<RecognizedReceiptDetailsResponse> => {
+        return axios.postForm<ApiResponse<RecognizedReceiptDetailsResponse>>('v1/custom/llm/transactions/recognize_receipt_image_details.json', {
             image: imageFile
         }, {
             timeout: DEFAULT_LLM_API_TIMEOUT,

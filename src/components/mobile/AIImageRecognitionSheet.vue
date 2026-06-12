@@ -37,20 +37,20 @@ import { ref, useTemplateRef } from 'vue';
 import { useI18n } from '@/locales/helpers.ts';
 import { useI18nUIComponents, closeAllDialog } from '@/lib/ui/mobile.ts';
 
-import { useTransactionsStore } from '@/stores/transaction.ts';
+import { useCustomReceiptRecognitionStore } from '@/stores/customReceiptRecognition.ts';
 
 import { ImageUploadQualityType } from '@/core/image.ts';
 import { KnownFileType } from '@/core/file.ts';
 import { SUPPORTED_IMAGE_EXTENSIONS } from '@/consts/file.ts';
 
-import type { RecognizedReceiptImageResponse } from '@/models/large_language_model.ts';
+import type { RecognizedReceiptDetailsResponse } from '@/models/custom_receipt_recognition.ts';
 
 import { generateRandomUUID } from '@/lib/misc.ts';
 import { compressJpgImageByQuality } from '@/lib/ui/common.ts';
 import logger from '@/lib/logger.ts';
 
 export interface AIImageRecognitionResult {
-    response: RecognizedReceiptImageResponse;
+    response: RecognizedReceiptDetailsResponse;
     imageFile: File;
 }
 
@@ -66,7 +66,7 @@ const emit = defineEmits<{
 const { tt } = useI18n();
 const { showCancelableLoading, showToast } = useI18nUIComponents();
 
-const transactionsStore = useTransactionsStore();
+const customReceiptRecognitionStore = useCustomReceiptRecognitionStore();
 
 const imageInput = useTemplateRef<HTMLInputElement>('imageInput');
 
@@ -130,7 +130,7 @@ function confirm(): void {
     recognizing.value = true;
     showCancelableLoading('Recognizing', 'AI can make mistakes. Check important info.', 'Cancel Recognition', cancelRecognize);
 
-    transactionsStore.recognizeReceiptImage({
+    customReceiptRecognitionStore.recognizeReceiptImageDetails({
         imageFile: imageFile.value,
         cancelableUuid: cancelRecognizingUuid.value
     }).then(response => {
@@ -159,7 +159,7 @@ function cancelRecognize(): void {
         return;
     }
 
-    transactionsStore.cancelRecognizeReceiptImage(cancelRecognizingUuid.value);
+    customReceiptRecognitionStore.cancelRecognizeReceiptImageDetails(cancelRecognizingUuid.value);
     recognizing.value = false;
     cancelRecognizingUuid.value = undefined;
     closeAllDialog();

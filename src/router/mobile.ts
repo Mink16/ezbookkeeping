@@ -10,6 +10,7 @@ import UnlockPage from '@/views/mobile/UnlockPage.vue';
 import TransactionListPage from '@/views/mobile/transactions/ListPage.vue';
 import TransactionEditPage from '@/views/mobile/transactions/EditPage.vue';
 import TransactionAmountFilterPage from '@/views/mobile/transactions/AmountFilterPage.vue';
+import ReceiptRecognitionConfirmPage from '@/views/mobile/transactions/ReceiptRecognitionConfirmPage.vue';
 
 import AccountListPage from '@/views/mobile/accounts/ListPage.vue';
 import AccountEditPage from '@/views/mobile/accounts/EditPage.vue';
@@ -395,6 +396,11 @@ const routes: Router.RouteParameters[] = [
     {
         path: '/admin/users',
         async: asyncResolve(AdminUserListPage),
+        beforeEnter: [checkLogin]
+    },
+    {
+        path: '/receipt_recognition/confirm',
+        async: asyncResolve(ReceiptRecognitionConfirmPage),
         beforeEnter: [checkLogin]
     },
     {

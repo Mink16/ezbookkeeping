@@ -14,6 +14,7 @@ var customModelsForColumnNameCheck = []any{
 	new(LlmPrompt),
 	new(CustomAdmin),
 	new(CustomLlmProfile),
+	new(CustomGeocodingCache),
 }
 
 // matches snake names containing split acronyms like "base_u_r_l" or "model_i_d"

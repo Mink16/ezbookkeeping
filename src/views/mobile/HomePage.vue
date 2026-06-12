@@ -229,6 +229,7 @@ import { useAccountsStore } from '@/stores/account.ts';
 import { useTransactionCategoriesStore } from '@/stores/transactionCategory.ts';
 import { useTransactionTemplatesStore } from '@/stores/transactionTemplate.ts';
 import { useOverviewStore } from '@/stores/overview.ts';
+import { useCustomReceiptRecognitionStore } from '@/stores/customReceiptRecognition.ts';
 
 import { DateRange } from '@/core/datetime.ts';
 import { TemplateType } from '@/core/template.ts';
@@ -236,6 +237,7 @@ import { TransactionTemplate } from '@/models/transaction_template.ts';
 import { isUserLogined, isUserUnlocked } from '@/lib/userstate.ts';
 import { getShareCacheImageBlob } from '@/lib/cache.ts';
 import { isTransactionFromAIImageRecognitionEnabled } from '@/lib/server_settings.ts';
+import { shouldShowReceiptConfirmation } from '@/lib/custom_receipt_recognition.ts';
 
 type AIImageRecognitionSheetType = InstanceType<typeof AIImageRecognitionSheet>;
 
@@ -259,6 +261,7 @@ const accountsStore = useAccountsStore();
 const transactionCategoriesStore = useTransactionCategoriesStore();
 const transactionTemplatesStore = useTransactionTemplatesStore();
 const overviewStore = useOverviewStore();
+const customReceiptRecognitionStore = useCustomReceiptRecognitionStore();
 
 const aiImageRecognitionSheet = useTemplateRef<AIImageRecognitionSheetType>('aiImageRecognitionSheet');
 
@@ -327,6 +330,17 @@ function reload(done?: () => void): void {
 }
 
 function onReceiptRecognitionChanged(result: AIImageRecognitionResult): void {
+    // two or more recognized items: hand off via the store (URL query cannot
+    // carry arrays) and let the user confirm multi-item registration
+    if (shouldShowReceiptConfirmation(result.response)) {
+        customReceiptRecognitionStore.setPendingResult({
+            response: result.response,
+            imageFile: result.imageFile
+        });
+        props.f7router.navigate('/receipt_recognition/confirm');
+        return;
+    }
+
     const recognizedResponse = result.response;
     const autoUploadRecognizedImage = settingsStore.appSettings.autoUploadTransactionPictureForAIRecognition;
     const params: string[] = [];

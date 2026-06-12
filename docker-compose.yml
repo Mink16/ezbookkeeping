@@ -28,6 +28,13 @@ services:
       EBK_LLM_IMAGE_RECOGNITION_REQUEST_TIMEOUT: "300000"
       # fork 独自: サーバー管理者のブートストラップ (カンマ区切りユーザー名、.env で設定)
       EBK_CUSTOM_ADMIN_USERNAMES: "${EBK_CUSTOM_ADMIN_USERNAMES:-}"
+      # fork 独自: レシート店舗所在地ジオコーディング (.env で有効化)。
+      # 有効時に外部送信されるのはレシートから抽出した店舗名・支店名・住所の文字列のみ
+      # (送信先: 国土地理院 AddressSearch / OSM Nominatim。レシート画像や金額は送信されない)
+      EBK_CUSTOM_GEOCODING_ENABLE: "${EBK_CUSTOM_GEOCODING_ENABLE:-false}"
+      EBK_CUSTOM_GEOCODING_PROVIDERS: "${EBK_CUSTOM_GEOCODING_PROVIDERS:-}"
+      EBK_CUSTOM_GEOCODING_REQUEST_TIMEOUT: "${EBK_CUSTOM_GEOCODING_REQUEST_TIMEOUT:-}"
+      EBK_CUSTOM_GEOCODING_PROXY: "${EBK_CUSTOM_GEOCODING_PROXY:-}"
     volumes:
       - ./docker-data/data:/ezbookkeeping/data
       - ./docker-data/storage:/ezbookkeeping/storage
@@ -61,6 +68,9 @@ services:
       EBK_LLM_IMAGE_RECOGNITION_REQUEST_TIMEOUT: "300000"
       # fork 独自: dev ユーザーをサーバー管理者にする (LLM 接続プロファイル管理の検証用)
       EBK_CUSTOM_ADMIN_USERNAMES: "dev"
+      # fork 独自: レシート店舗所在地ジオコーディング (dev では精度検証のため既定で有効)。
+      # 外部送信されるのは店舗名・支店名・住所の文字列のみ (国土地理院 / OSM Nominatim)
+      EBK_CUSTOM_GEOCODING_ENABLE: "${EBK_CUSTOM_GEOCODING_ENABLE_DEV:-true}"
     volumes:
       - ./docker-data-dev/data:/ezbookkeeping/data
       - ./docker-data-dev/storage:/ezbookkeeping/storage

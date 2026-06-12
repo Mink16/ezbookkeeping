@@ -2715,6 +2715,7 @@
     "Numeric Overflow": "Numeric Overflow",
     "Click to close": "Click to close",
     "AI Receipt Recognition Prompts": "AI Receipt Recognition Prompts",
+    "Custom prompts are not applied to the multi-item receipt recognition flow currently in use": "Custom prompts are not applied to the multi-item receipt recognition flow currently in use",
     "Default Prompt": "Default Prompt",
     "Add Prompt": "Add Prompt",
     "Edit Prompt": "Edit Prompt",
@@ -2800,5 +2801,19 @@
     "User list has been updated": "User list has been updated",
     "Unable to retrieve user list": "Unable to retrieve user list",
     "Unable to grant administrator privileges": "Unable to grant administrator privileges",
-    "Unable to revoke administrator privileges": "Unable to revoke administrator privileges"
+    "Unable to revoke administrator privileges": "Unable to revoke administrator privileges",
+    "Confirm Recognition Result": "Confirm Recognition Result",
+    "Register as One Transaction": "Register as One Transaction",
+    "Register Items Separately": "Register Items Separately",
+    "Receipt Total": "Receipt Total",
+    "Items Total": "Items Total",
+    "Adjustment": "Adjustment",
+    "Consumption Tax": "Consumption Tax",
+    "Distribute Difference to Items": "Distribute Difference to Items",
+    "Attach Geolocation": "Attach Geolocation",
+    "Resolved Location": "Resolved Location",
+    "The total of selected items differs from the receipt total": "The total of selected items differs from the receipt total",
+    "Retry Failed Items": "Retry Failed Items",
+    "All transactions have been saved": "All transactions have been saved",
+    "Unable to save some transactions": "Unable to save some transactions"
 }

@@ -8,6 +8,10 @@
             </f7-nav-right>
         </f7-navbar>
 
+        <f7-block class="no-margin-bottom">
+            <f7-block-footer class="no-margin no-padding">{{ tt('Custom prompts are not applied to the multi-item receipt recognition flow currently in use') }}</f7-block-footer>
+        </f7-block>
+
         <f7-list strong inset dividers class="margin-top skeleton-text" v-if="loading">
             <f7-list-item title="Prompt Name"
                           :key="itemIdx" v-for="itemIdx in [ 1, 2, 3 ]">
