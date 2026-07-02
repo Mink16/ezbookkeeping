@@ -234,7 +234,7 @@ func (a *CustomReceiptRecognitionApi) RecognizeReceiptImageDetailsHandler(c *cor
 	}
 
 	if llmResponse == nil || len(llmResponse.Content) == 0 || strings.HasPrefix(llmResponse.Content, "{}") {
-		return nil, errs.ErrNoTransactionInformationInImage
+		return nil, errs.ErrNoTransactionInformation
 	}
 
 	var result *models.RecognizedReceiptDetailsResult
@@ -245,17 +245,17 @@ func (a *CustomReceiptRecognitionApi) RecognizeReceiptImageDetailsHandler(c *cor
 	}
 
 	if result == nil {
-		return nil, errs.ErrNoTransactionInformationInImage
+		return nil, errs.ErrNoTransactionInformation
 	}
 
-	baseResponse, errResp := LargeLanguageModels.parseRecognizedReceiptImageResponse(c, uid, clientTimezone, &result.RecognizedReceiptImageResult, accountMap, expenseCategoryMap, incomeCategoryMap, transferCategoryMap, tagMap)
+	baseResponse, errResp := LargeLanguageModels.parseRecognizedTransactionResponse(c, uid, clientTimezone, &result.RecognizedTransactionResult, accountMap, expenseCategoryMap, incomeCategoryMap, transferCategoryMap, tagMap)
 
 	if errResp != nil {
 		return nil, errResp
 	}
 
 	response := &models.RecognizedReceiptDetailsResponse{
-		RecognizedReceiptImageResponse: *baseResponse,
+		RecognizedTransactionResponse: *baseResponse,
 	}
 
 	items := a.parseRecognizedReceiptItems(c, uid, response.Type, result.Items, expenseCategoryMap, incomeCategoryMap, transferCategoryMap)

@@ -8,7 +8,7 @@ const (
 
 // RecognizedReceiptDetailsResult represents the result of recognized receipt image with item details
 type RecognizedReceiptDetailsResult struct {
-	RecognizedReceiptImageResult
+	RecognizedTransactionResult
 	Items    []*RecognizedReceiptItemResult   `json:"items,omitempty"`
 	Merchant *RecognizedReceiptMerchantResult `json:"merchant,omitempty"`
 }
@@ -29,7 +29,7 @@ type RecognizedReceiptMerchantResult struct {
 
 // RecognizedReceiptDetailsResponse represents a view-object of recognized receipt image response with item details
 type RecognizedReceiptDetailsResponse struct {
-	RecognizedReceiptImageResponse
+	RecognizedTransactionResponse
 	Items       []*RecognizedReceiptItemResponse   `json:"items,omitempty"`
 	GeoLocation *TransactionGeoLocationResponse    `json:"geoLocation,omitempty"`
 	Location    *RecognizedReceiptLocationResponse `json:"location,omitempty"`

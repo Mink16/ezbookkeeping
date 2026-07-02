@@ -32,7 +32,8 @@ import {
 } from '@/core/base.ts';
 
 import {
-    TextDirection
+    TextDirection,
+    KeywordMatchMode
 } from '@/core/text.ts';
 
 import {
@@ -1554,7 +1555,7 @@ export function useI18n() {
         return availableExchangeRates;
     }
 
-    function getAllSupportedImportFileCagtegoryAndTypes(): LocalizedImportFileCategoryAndTypes[] {
+    function getAllSupportedImportFileCagtegoryAndTypes(supportAITextRecognition: boolean): LocalizedImportFileCategoryAndTypes[] {
         const allSupportedImportFileCategoryAndTypes: LocalizedImportFileCategoryAndTypes[] = [];
 
         for (const categoryAndTypes of SUPPORTED_IMPORT_FILE_CATEGORY_AND_TYPES) {
@@ -1564,6 +1565,10 @@ export function useI18n() {
             };
 
             for (const fileType of categoryAndTypes.fileTypes) {
+                if (fileType.needAITextRecognition && !supportAITextRecognition) {
+                    continue;
+                }
+
                 let document: LocalizedImportFileDocument | undefined;
 
                 if (fileType.document) {
@@ -1647,7 +1652,9 @@ export function useI18n() {
                     subTypes: subTypes.length ? subTypes : undefined,
                     supportedEncodings: supportedEncodings.length ? supportedEncodings : undefined,
                     dataFromTextbox: fileType.dataFromTextbox,
+                    needAITextRecognition: fileType.needAITextRecognition,
                     supportedAdditionalOptions: fileType.supportedAdditionalOptions,
+                    supportedAIAdditionalPrompt: fileType.supportedAIAdditionalPrompt,
                     document: document
                 };
 
@@ -2569,6 +2576,7 @@ export function useI18n() {
         getAllCurrencyDisplayTypes,
         getAllCurrencySortingTypes: () => getLocalizedDisplayNameAndType(CurrencySortingType.values()),
         getAllCoordinateDisplayTypes: () => getLocalizedDisplayNameAndTypeWithSystemDefault(CoordinateDisplayType.values(), CoordinateDisplayType.SystemDefaultType, CoordinateDisplayType.Default),
+        getAllKeywordMatchModes: () => getLocalizedDisplayNameAndType(KeywordMatchMode.values()),
         getAllImageUploadQualityTypes,
         getAllExpenseAmountColors: () => getAllExpenseIncomeAmountColors(CategoryType.Expense),
         getAllIncomeAmountColors: () => getAllExpenseIncomeAmountColors(CategoryType.Income),

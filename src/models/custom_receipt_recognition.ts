@@ -1,6 +1,6 @@
 import type { Coordinate } from '@/core/coordinate.ts';
 
-import type { RecognizedReceiptImageResponse } from './large_language_model.ts';
+import type { RecognizedTransactionResponse } from './large_language_model.ts';
 import type { TransactionGeoLocationResponse } from './transaction.ts';
 
 export type RecognizedReceiptAdjustmentKind = 'tax' | 'unknown';
@@ -21,7 +21,7 @@ export interface RecognizedReceiptLocationResponse {
     readonly provider?: string;
 }
 
-export interface RecognizedReceiptDetailsResponse extends RecognizedReceiptImageResponse {
+export interface RecognizedReceiptDetailsResponse extends RecognizedTransactionResponse {
     readonly items?: RecognizedReceiptItemResponse[];
     readonly geoLocation?: TransactionGeoLocationResponse;
     readonly location?: RecognizedReceiptLocationResponse;

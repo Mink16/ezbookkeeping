@@ -10,12 +10,14 @@
         "dshemin",
         "lucdsouza",
         "OuIChien",
-        "RasterCrow"
+        "RasterCrow",
+        "vjsai"
     ],
     "translators": {
         "de": [
             "chrgm",
-            "1270o1"
+            "1270o1",
+            "martinschilliger"
         ],
         "en": [],
         "es": [
@@ -45,6 +47,9 @@
         "pt-BR": [
             "thecodergus",
             "balaios"
+        ],
+        "ro": [
+            "gg64nou"
         ],
         "ru": [
             "artegoser",
