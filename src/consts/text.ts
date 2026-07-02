@@ -1182,10 +1182,12 @@ export const FOLDED_CHARACTER_MAP: Record<string, string> = {
     '\uA7C9': '\uA7CA',
     '\uA7CB': '\u0264',
     '\uA7CC': '\uA7CD',
-    '\uA7CE': '\uA7CF',
+    // Custom (fork-local): U+A7CE, U+A7D2 and U+A7D4 are removed from this map. The oxc minifier
+    // (vite 8 / rolldown) rewrites quoted string keys into bare identifier keys using Unicode 16+
+    // ID_Start tables, but current V8 (Chromium / Node) does not accept these three code points as
+    // identifiers yet, so keeping them makes the whole minified bundle fail to parse
+    // ("SyntaxError: Invalid or unexpected token" and a blank page on both desktop and mobile).
     '\uA7D0': '\uA7D1',
-    '\uA7D2': '\uA7D3',
-    '\uA7D4': '\uA7D5',
     '\uA7D6': '\uA7D7',
     '\uA7D8': '\uA7D9',
     '\uA7DA': '\uA7DB',
