@@ -6,9 +6,9 @@
 
 - `main` は本家 (upstream) の完全ミラー。**独自コミットは絶対に入れない**。更新は `git pull upstream main` のみ
   - この禁止は PreToolUse hook (`.claude/hooks/block-git-violations.sh`) でも強制されており、main 上でのコミット作成系コマンド・`git push origin main`・upstream への push は自動的に deny される
-- 運用ブランチは `custom/main`(本家リリースタグ + 独自機能の統合ブランチ)
+- 運用ブランチは `custom/main`(本家リリース + 独自機能の統合ブランチ)
 - 機能追加は `custom/main` 起点で `feature/xxx` ブランチを切り、完成後 `custom/main` にマージする
-- 本家の新リリース取り込みは `/sync-upstream` スキルの手順に従う(リリースタグ単位でマージ。日次の main 追従はしない)
+- 本家の取り込みは `/sync-upstream` スキルの手順に従う(**デフォルトはリリースタグ単位**。タグ未収載の機能が必要なときのみ、ユーザー合意の上で `upstream/main` を例外的に取り込む。日次の main 追従はしない)
 
 ## リモート構成
 
